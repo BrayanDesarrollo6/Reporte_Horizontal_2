@@ -1,0 +1,19 @@
+<!-- cargar el header -->
+<%- include("template/header", {tituloweb: "Reporte Horizontal"}) %>
+<!-- Contenido de la página /reporte horizontal -->
+<section class="login">
+    <div class="login_box">
+        <div class="left">
+            <div class="contact">
+                <form action="/procesar/" method="GET">
+                    <h3>REPORTE HORIZONTAL</h3>
+                    <input type="text" placeholder="ID PERIODO",ID = "id", name = "id">
+                    <button class="submit">LET'S GO</button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</section>
+<!-- Cargar el footer -->
+<%- include("template/footer") %>

@@ -1,0 +1,25 @@
+<!-- cargar el header -->
+<%- include("template/header", {tituloweb: "TXTSS"}) %>
+<!-- Contenido de la página /TXTSS -->
+<section class="login">
+    <div class="login_box">
+        <div class="left">
+            <div class="contact">
+                <form action="/procesarTXTSS/" method="GET">
+                    <h3>TXT SS</h3>
+                    <select class="select" id="Empresa" name="Empresa">
+                        <option class="selectO" value="HQ5 S.A.S">HQ5 SAS</option>
+                        <option class="selectO"  value="TECNO GESTION FD S A S">TECNO GESTION</option>
+                        <option class="selectO"  value="TEMPOENLACE S.A.S">TEMPOENLACE</option>
+                        <option class="selectO"  value="COOMPHIA SERVICIOS">COOMPHIA</option>
+                      </select>
+                    <input type="text"placeholder="AÑO", ID = "Anio", name = "Anio">
+                    <input type="text"placeholder="MES", ID = "Mes", name = "Mes">
+                    <button class="submit">PROCESAR</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Cargar el footer -->
+<%- include("template/footer") %>
