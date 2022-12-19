@@ -1,0 +1,91 @@
+/* DISEÑO DEL FOOTER */
+/* color de fondo del footer */
+.footer{
+    margin-top: auto;
+    background-color: #24262b;
+    padding: 50px 0;
+}
+/* contenedor del footer */    
+.container{
+    width: 100%;
+    min-height: 10vh;
+}
+/* Div del contenedor del footer */
+.row{
+    display: flex;
+    flex-wrap: wrap;
+}
+/* Diviones en el footer */
+.footer-col{
+    width: 25%;
+    padding: 0 15px;
+}
+/* Parametros de la letra para el titulo de las secciones del footer */
+.footer-col h4{
+    font-size: 18px;
+    color: #ffffff;
+    text-transform: capitalize;
+    margin-bottom: 35px;
+    font-weight: 500;
+    position: relative;
+}
+/* Barra de color inferior a los titulos de las secciones y sus parametros */
+.footer-col h4::before{
+    content: '';
+    position: absolute;
+    left:0;
+    bottom: -10px;
+    background-color: #e91e63;
+    height: 3px;
+    box-sizing: border-box;
+    width: 100px;
+}
+/* Espacio entre opciones de las listas o margen inferior */
+.footer-col ul li:not(:last-child){
+    margin-bottom: 5px;
+}
+/* Tipo de letra y transición para las opciones de las secciones */
+.footer-col ul li a{
+    font-size: 16px;
+    text-transform: capitalize;
+    text-decoration: none;
+    font-weight: 500;
+    color: #bbbbbb;
+    display: block;
+    transition: all 0.3s ease;
+}
+/* Desplazamiento de la animación y color */
+.footer-col ul li a:hover{
+    color: #ffffff;
+    padding-left: 10px;
+}
+/* Parametros de animacion y configuracion de los logos de redes sociales */
+.footer-col .social-links a{
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    background-color: rgba(255,255,255,0.2);
+    margin:0 10px 10px 0;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    color: #ffffff;
+    transition: all 0.5s ease;
+}
+/* Animación y color de los logos de redes sociales */
+.footer-col .social-links a:hover{
+    color: #24262b;
+    background-color: #ffffff;
+}
+/*responsive el footer*/
+@media(max-width: 767px){
+    .footer-col{
+    width: 50%;
+    margin-bottom: 30px;
+    }
+}
+@media(max-width: 574px){
+    .footer-col{
+    width: 100%;
+    }
+}

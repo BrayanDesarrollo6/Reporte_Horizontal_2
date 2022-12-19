@@ -8,25 +8,27 @@ from django.shortcuts import render
 ##Librerias para el proceso del reporte horizontal
 import pandas as pd
 from xlsxwriter import Workbook
-from io import BytesIO
+# from io import BytesIO
 # import io,csv
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl import Workbook
 from openpyxl import load_workbook
 import sys
-import json
+# import json
+
+# Variables globales 
+# IdPeriodo = "36638"
+IdPeriodo = sys.argv[1]
+#Traer información
+URL = "https://creatorapp.zohopublic.com/hq5colombia/compensacionhq5/xls/Conceptos_Nomina_Desarrollo/jwhRFUOR47TqCS9AAT82eCybwgdmgeArEtKG7U8H9s3hSjTzBd3G8bPdg37PHVygvxurxwCQvMCgHRG68dOCWKTmMWaQJU2TMwnr?ID_Periodo="+IdPeriodo
+# url_ = "https://creatorapp.zohopublic.com/hq5colombia/compensacionhq5/xls/Prenomina/WWjRAOJ2MGyyNGd5BxdvwApYGzgq5A9AQ5Q6bUmpsTQvWTMJE4qE5MyKnY4KKPXneurq8RnTZ2O698AO8N2KQ7Fa7qt4hpwSet0K?Periodo=" + _idPeriodo + "&zc_FileName=PreNomina_" + _idPeriodo;
+df = pd.read_excel(URL)
+df1 = pd.DataFrame(df)
 
 def procesar():
     
-    # IdPeriodo = "36638"
-    IdPeriodo = "35346"
     # Dataframe final
     Horizontal = pd.DataFrame()
-    #Traer información
-    URL = "https://creatorapp.zohopublic.com/hq5colombia/compensacionhq5/xls/Conceptos_Nomina_Desarrollo/jwhRFUOR47TqCS9AAT82eCybwgdmgeArEtKG7U8H9s3hSjTzBd3G8bPdg37PHVygvxurxwCQvMCgHRG68dOCWKTmMWaQJU2TMwnr?ID_Periodo="+IdPeriodo
-    # url_ = "https://creatorapp.zohopublic.com/hq5colombia/compensacionhq5/xls/Prenomina/WWjRAOJ2MGyyNGd5BxdvwApYGzgq5A9AQ5Q6bUmpsTQvWTMJE4qE5MyKnY4KKPXneurq8RnTZ2O698AO8N2KQ7Fa7qt4hpwSet0K?Periodo=" + _idPeriodo + "&zc_FileName=PreNomina_" + _idPeriodo;
-    df = pd.read_excel(URL)
-    df1 = pd.DataFrame(df)
     
     Contrato  = df1['Numero de Contrato'].unique().tolist()
     #Filtrar cada concepto unico que existe en ese reporte
@@ -147,74 +149,62 @@ def procesar():
         
     Horizontal = Horizontal.append(FilaAgregar, ignore_index=True)
 
-    # Horizontal = Horizontal.iloc[1:2]
-    s = Horizontal.to_json(orient='records')
+    wb = Workbook()
+    ws = wb.active
     
-    # s = Horizontal.to_json()
-    print(s)
+    for r in dataframe_to_rows(Horizontal, index=False, header=True):
+        ws.append(r)
 
-    # wb = Workbook()
-    # ws = wb.active
+    ws.insert_rows(1)
+    ws.insert_rows(1)
+    ws.insert_rows(1)
+    Horizontal = pd.DataFrame(ws.values)
     
-    # for r in dataframe_to_rows(Horizontal, index=False, header=True):
-    #     ws.append(r)
+    writer = pd.ExcelWriter("./public/"+NombreDocumento+".xlsx", engine='xlsxwriter')
+    Horizontal.to_excel(writer, sheet_name='Sheet1',index = False, header = False)
+    # Horizontal.to_excel(writer, sheet_name='Sheet1',index = False, header = False)
+    # Edicion del estilo del excel
+    workbook = writer.book
+    worksheet = writer.sheets["Sheet1"]
+    format = workbook.add_format()
+    format.set_pattern(1)
+    format.set_bg_color('#AFAFAF')
+    format.set_bold(True) 
+        
+    worksheet.write_string(1, 1,str(ContratoPos.iloc[0]['Temporal']),format)
+    worksheet.write_string(1, 2,str(ContratoPos.iloc[0]['Empresa']),format)
+    worksheet.write_string(1, 3,str(ContratoPos.iloc[0]['ID Periodo']),format)
+    worksheet.write_string(1, 4,str(ContratoPos.iloc[0]['Mes']),format)
+    worksheet.write_string(1, 5,str(ContratoPos.iloc[0]['Tipo de Perido']),format)
+    worksheet.write_string(1, 1,str(ContratoPos.iloc[0]['Temporal']),format)
+    worksheet.write_string(1, 2,str(ContratoPos.iloc[0]['Empresa']),format)
+    worksheet.write_string(1, 3,str(ContratoPos.iloc[0]['ID Periodo']),format)
+    worksheet.write_string(1, 4,str(ContratoPos.iloc[0]['Mes']),format)
+    worksheet.write_string(1, 5,str(ContratoPos.iloc[0]['Tipo de Perido']),format)
+        
+    contador = 0
+    MaxFilas = len(Horizontal.axes[0])
+    Totales = Horizontal.loc[MaxFilas -1]
+    for k in heads:
+        
+        worksheet.write_string(3, contador,str(k),format)
+        contador += 1
+        
+    contador = 0
+    for k in Totales:
+        Dato = ""
+        if(str(k) != "nan"):
+            Dato = str(k)
+        worksheet.write_string(MaxFilas-1, contador,Dato ,format)
+        contador += 1
+    ##Modificar el excel
+    writer.save()
+    print(str(NombreDocumento)+".xlsx")
 
-    # ws.insert_rows(1)
-    # ws.insert_rows(1)
-    # ws.insert_rows(1)
-    # Horizontal = pd.DataFrame(ws.values)
-
-    # with BytesIO() as b:
-    #     # Use the StringIO object as the filehandle.
-    #     writer = pd.ExcelWriter(b, engine='xlsxwriter')
-    #     Horizontal.to_excel(writer, sheet_name='Sheet1',index = False, header = False)
-    #     # Horizontal.to_excel(writer, sheet_name='Sheet1',index = False, header = False)
-    #     # Edicion del estilo del excel
-    #     workbook = writer.book
-    #     worksheet = writer.sheets["Sheet1"]
-    #     format = workbook.add_format()
-    #     format.set_pattern(1)
-    #     format.set_bg_color('#AFAFAF')
-    #     format.set_bold(True) 
+def validar_contenido_id():  
+    if(df1.empty):
+        print("No existe registro")
+    else:
+        procesar()
         
-    #     worksheet.write_string(1, 1,str(ContratoPos.iloc[0]['Temporal']),format)
-    #     worksheet.write_string(1, 2,str(ContratoPos.iloc[0]['Empresa']),format)
-    #     worksheet.write_string(1, 3,str(ContratoPos.iloc[0]['ID Periodo']),format)
-    #     worksheet.write_string(1, 4,str(ContratoPos.iloc[0]['Mes']),format)
-    #     worksheet.write_string(1, 5,str(ContratoPos.iloc[0]['Tipo de Perido']),format)
-    #     worksheet.write_string(1, 1,str(ContratoPos.iloc[0]['Temporal']),format)
-    #     worksheet.write_string(1, 2,str(ContratoPos.iloc[0]['Empresa']),format)
-    #     worksheet.write_string(1, 3,str(ContratoPos.iloc[0]['ID Periodo']),format)
-    #     worksheet.write_string(1, 4,str(ContratoPos.iloc[0]['Mes']),format)
-    #     worksheet.write_string(1, 5,str(ContratoPos.iloc[0]['Tipo de Perido']),format)
-        
-    #     contador = 0
-    #     MaxFilas = len(Horizontal.axes[0])
-    #     Totales = Horizontal.loc[MaxFilas -1]
-    #     for k in heads:
-            
-    #         worksheet.write_string(3, contador,str(k),format)
-    #         contador += 1
-            
-    #     contador = 0
-    #     for k in Totales:
-    #         Dato = ""
-    #         if(str(k) != "nan"):
-    #             Dato = str(k)
-    #         worksheet.write_string(MaxFilas-1, contador,Dato ,format)
-    #         contador += 1
-    #     ##Modificar el excel
-    #     writer.save()
-    #     # Set up the Http response.
-    #     filename = NombreDocumento+'.xlsx'
-    #     response = HttpResponse(
-    #         b.getvalue(),
-    #         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    #     )
-    #     response['Content-Disposition'] = 'attachment; filename=%s' % filename
-    #     # print(b)
-        
-    #     return response
-    # return render(request, "Resultado.html")
-    
-procesar()
+validar_contenido_id()

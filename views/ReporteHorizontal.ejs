@@ -5,14 +5,16 @@
     <div class="login_box">
         <div class="left">
             <div class="contact">
-                <form action="/procesar/" method="GET">
+                <form action="/procesar/" method="POST" style="display: block;">
                     <h3>REPORTE HORIZONTAL</h3>
-                    <input type="text" placeholder="ID PERIODO",ID = "id", name = "id">
+                    <input type="text" placeholder="ID PERIODO" name="id">
                     <button class="submit">LET'S GO</button>
                 </form>
+                <div id="load">
+                    <p><img src="/images/loading.gif" width="500" height="500" style="display: none;"></p>
+                </div>
             </div>
         </div>
-        
     </div>
 </section>
 <!-- Cargar el footer -->
