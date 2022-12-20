@@ -56,6 +56,7 @@ function callName(req, res) {
             Nombre = data.toString();
             // console.log(Nombre);
             Nombre = Nombre.split("\r\n").join("");
+            Nombre = Nombre.split("\n").join("");
             if(Nombre == "No existe registro"){
                 res.render('Result');
             }
