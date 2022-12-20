@@ -46,7 +46,7 @@ function callName(req, res) {
     
     if(data != ""){
         var spawn = require("child_process").spawn;
-        var process = spawn('python',["./views/TXTSS.py",data]);
+        var process = spawn('python',["./views/ReporteHorizontal.py",data]);
         var Nombre = "";
         // process.stdout.on('data', function(data) {
         process.stderr.on("data",(data)=>{
@@ -88,6 +88,47 @@ function callName(req, res) {
 //     var a = req.body.id;
 //     console.log(a);
 // })
+
+// Petición sexta
+app.post('/procesarTXTSS', callName2);
+
+function callName2(req, res){
+    data_1 = req.body.Empresa;
+    data_2 = req.body.Anio;
+    data_3 = req.body.Mes;
+    // d = a.toString()+","+b.toString()+","+c.toString();
+    // res.send(d);
+
+    if(data_1 != "" && data_2 != "" && data_3 != ""){
+        var spawn = require("child_process").spawn;
+        var process = spawn('python',["./views/TXTSS.py",data_1,data_2,data_3]);
+        var Nombre = "";
+        // process.stdout.on('data', function(data) {
+        process.stderr.on("data",(data)=>{
+            console.error('stderr:',data.toString());
+        })
+        process.stdout.on('data', (data) => {
+            Nombre = data.toString();
+            Nombre = Nombre.split("\r\n").join("");
+            Nombre = Nombre.split("\n").join("");
+            // console.log(Nombre);
+            if(Nombre == "No existe registro"){
+                res.render('Result_Txt');
+            }
+            else{
+                process.stdout.on('end', function(data) {
+                    res.download('./public/'+Nombre); 
+                    setTimeout(() => {
+                        fs.unlinkSync('./public/'+Nombre);
+                    }, "100")
+                } )
+            }
+        });
+    }
+    else{
+        res.render('Result_Txt');
+    }
+}
 
 // Al final de todas las rutas si no la encuentra sale el error 404 - Peticion final error
 app.use((req,res,next) => {

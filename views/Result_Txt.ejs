@@ -1,0 +1,18 @@
+<!-- cargar el header -->
+<%- include("template/header", {tituloweb: "Reporte Horizontal"}) %>
+<!-- Contenido de la página /reporte horizontal -->
+<section class="login">
+    <div class="login_box">
+        <div class="left">
+            <div class="contact">
+                <form action="/TXTSS" method="GET">
+                    <p class="mess_warning_t">¡Alerta!</p>
+                    <p class="mess_warning">No se encuentra información para el proceso, por favor válida la información ingresada.</p>
+                    <button class="submit">REGRESAR</button>
+                </form> 
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Cargar el footer -->
+<%- include("template/footer") %>
