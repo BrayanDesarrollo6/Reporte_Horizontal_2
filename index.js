@@ -9,14 +9,17 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 // importa el módulo de node `file-system`
 const fs = require('fs');
+const { render } = require('ejs');
 // const { time } = require('console');
+// Modulo path
+const path = require('path');
 
 // Motor de plantillas
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
 // Peticion dinamica cuando tenga un hosting __dirname y para las renderizaciones globales
-app.use(express.static(__dirname + "/public"))
+app.use(express.static(path.join(__dirname,'/public')));
 
 // Peticion principal
 app.get('/', (req,res) => {
@@ -43,7 +46,6 @@ app.post('/procesar', callName);
 
 function callName(req, res) {
     var data = req.body.id;
-    
     if(data != ""){
         var spawn = require("child_process").spawn;
         var process = spawn('python',["./views/ReporteHorizontal.py",data]);
@@ -54,7 +56,6 @@ function callName(req, res) {
         })
         process.stdout.on('data', (data) => {
             Nombre = data.toString();
-            // console.log(Nombre);
             Nombre = Nombre.split("\r\n").join("");
             Nombre = Nombre.split("\n").join("");
             if(Nombre == "No existe registro"){
@@ -70,8 +71,8 @@ function callName(req, res) {
                         const dataExcel = XLSX.utils.sheet_to_json(workBook.Sheets[sheet]);
                     }
                     leerexcel();
-                    res.download('./public/'+Nombre); 
-                    setTimeout(() => {
+                    res.download('./public/'+Nombre);
+                    setTimeout(() => {                       
                         fs.unlinkSync('./public/'+Nombre);
                     }, "100")
                 } )

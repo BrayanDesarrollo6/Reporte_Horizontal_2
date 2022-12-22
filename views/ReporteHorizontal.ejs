@@ -5,13 +5,16 @@
     <div class="login_box">
         <div class="left">
             <div class="contact">
-                <form action="/procesar/" method="POST" style="display: block;">
+                <form action="/procesar/" method="POST" style="display: block;" id="Report">
                     <h3>REPORTE HORIZONTAL</h3>
-                    <input type="text" placeholder="ID PERIODO" name="id">
+                    <input type="text" placeholder="ID PERIODO" name="id" id="entrada">
                     <button class="submit">LET'S GO</button>
                 </form>
-                <div id="load">
-                    <p><img src="/images/loading.gif" width="500" height="500" style="display: none;"></p>
+                <div id="load" style="display: none;">
+                    <p>
+                        <h5>Estamos procesando tu solicitud...</h5>
+                        <img src="/images/loading.gif" width="300" height="300">
+                    </p>
                 </div>
             </div>
         </div>
