@@ -10,13 +10,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 // importa el módulo de node `file-system`
 const fs = require('fs');
 const { render } = require('ejs');
-// const { time } = require('console');
 // Modulo path
 const path = require('path');
 
 // Motor de plantillas
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+app.set('views', path.join(__dirname,'/views'));
 
 // Peticion dinamica cuando tenga un hosting __dirname y para las renderizaciones globales
 app.use(express.static(path.join(__dirname,'/public')));
@@ -83,12 +82,6 @@ function callName(req, res) {
         res.render('ReporteHorizontal');
     }
 }
-
-// Metodo de recibir el contenido del field con post
-// app.post('/procesar', (req,res) => {
-//     var a = req.body.id;
-//     console.log(a);
-// })
 
 // Petición sexta
 app.post('/procesarTXTSS', callName2);
