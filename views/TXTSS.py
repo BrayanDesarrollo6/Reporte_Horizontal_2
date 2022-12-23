@@ -104,7 +104,7 @@ def procesarTXTSS():
         FilaAgregar = {}
         FilaAgregar["TXT"] = TXT_
         ##Se agrega el diccionario a un nuevo dataframe
-        TXT_Final = TXT_Final.append(FilaAgregar, ignore_index=True)
+        TXT_Final = pd.concat([TXT_Final,pd.DataFrame.from_records([FilaAgregar])],ignore_index=True)
         
         ## Dar consecutivo y completar linea de empleados
         ## Se añade al dataframe final
@@ -113,7 +113,7 @@ def procesarTXTSS():
             Ceros_ = 5 - len(str(i +1))
             Contador = (Ceros_* "0") + str(i+1)
             FilaAgregar["TXT"] =  "02"+ Contador + str(df.iloc[i]['TXT'])
-            TXT_Final = TXT_Final.append(FilaAgregar, ignore_index=True)
+            TXT_Final = pd.concat([TXT_Final,pd.DataFrame.from_records([FilaAgregar])],ignore_index=True)
 
         ##Para exportar en txt
         NombreTXT_ = "TXT-" + NombreTemporal_ + "-" + Anio + "-" + Mes 
