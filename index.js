@@ -12,6 +12,8 @@ const fs = require('fs');
 const { render } = require('ejs');
 // Modulo path
 const path = require('path');
+// Modulo Python
+const spawn = require("child_process").spawn;
 
 // Motor de plantillas
 app.set('view engine', 'ejs');
@@ -46,35 +48,45 @@ app.post('/procesar', callName);
 function callName(req, res) {
     var data = req.body.id;
     if(data != ""){
-        var spawn = require("child_process").spawn;
         var process = spawn('python',["./views/ReporteHorizontal.py",data]);
         var Nombre = "";
         // process.stdout.on('data', function(data) {
         process.stderr.on("data",(data)=>{
             console.error('stderr:',data.toString());
-        })
+        });
         process.stdout.on('data', (data) => {
             Nombre = data.toString();
             Nombre = Nombre.split("\r\n").join("");
             Nombre = Nombre.split("\n").join("");
+        });
+        process.stdout.on('end', function(data) {
             if(Nombre == "No existe registro"){
                 res.render('Result');
             }
             else{
-                process.stdout.on('end', function(data) {
-                    function leerexcel(req, res){
-                        const workBook = XLSX.readFile('./public/'+Nombre);
-                        const workbooksheet = workBook.SheetNames;
-                        // console.log(workbooksheet);
-                        const sheet = workbooksheet[0];
-                        const dataExcel = XLSX.utils.sheet_to_json(workBook.Sheets[sheet]);
-                    }
-                    leerexcel();
-                    res.download('./public/'+Nombre);
-                    setTimeout(() => {                       
-                        fs.unlinkSync('./public/'+Nombre);
-                    }, "100")
-                } )
+                function leerexcel(req, res){
+                    const workBook = XLSX.readFile('./public/'+Nombre);
+                    const workbooksheet = workBook.SheetNames;
+                    // console.log(workbooksheet);
+                    const sheet = workbooksheet[0];
+                    const dataExcel = XLSX.utils.sheet_to_json(workBook.Sheets[sheet]);
+                }
+                leerexcel();
+                res.download('./public/'+Nombre);
+                setTimeout(()=>{
+                    fs.access('./public/'+Nombre, error => {
+                        if (!error) {
+                            fs.unlink('./public/'+Nombre,function(error){
+                                if(error) 
+                                console.error('Error Occured:', error);
+                                console.log('File deleted!');
+                            });
+                        } 
+                        else {
+                            console.error('Error Occured:', error);
+                        }
+                    });
+                }, "100");
             }
         });
     }
@@ -114,7 +126,7 @@ function callName2(req, res){
                     res.download('./public/'+Nombre); 
                     setTimeout(() => {
                         fs.unlinkSync('./public/'+Nombre);
-                    }, "100")
+                    }, "10")
                 } )
             }
         });

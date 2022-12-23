@@ -133,8 +133,8 @@ def procesar():
         FilaAgregar["Interés cesantías"] = ContratoPos.iloc[0]['Interés cesantías']
         FilaAgregar["Total provisiones"] = ContratoPos.iloc[0]['Vacaciones tiempo'] + ContratoPos.iloc[0]['Prima'] + ContratoPos.iloc[0]['Cesantías'] + ContratoPos.iloc[0]['Interés cesantías']
         
-        Horizontal = Horizontal.append(FilaAgregar, ignore_index=True)
-    NombreDocumento = "Horizontal " + Horizontal.iloc[0]['Empresa'] +"-"+ str(Horizontal.iloc[0]['Mes'])+ "-" + str(Horizontal.iloc[0]['Tipo de Perido'])
+        Horizontal = pd.concat([Horizontal,pd.DataFrame.from_records([FilaAgregar])],ignore_index=True)
+    NombreDocumento = "Horizontal " + str(Horizontal.iloc[0]['Empresa']) +"-"+ str(Horizontal.iloc[0]['Mes'])+ "-" + str(Horizontal.iloc[0]['Tipo de Perido'])
     
     heads = Horizontal.columns.values
     FilaAgregar = {}
@@ -146,8 +146,7 @@ def procesar():
         if(Validador):
             Horizontal[k] = Horizontal[k].astype('float')
             FilaAgregar[k] = sum(Horizontal[k])
-        
-    Horizontal = Horizontal.append(FilaAgregar, ignore_index=True)
+    Horizontal = pd.concat([Horizontal,pd.DataFrame.from_records([FilaAgregar])],ignore_index=True)
 
     wb = Workbook()
     ws = wb.active
@@ -198,8 +197,8 @@ def procesar():
         worksheet.write_string(MaxFilas-1, contador,Dato ,format)
         contador += 1
     ##Modificar el excel
-    writer.save()
-    print(str(NombreDocumento)+".xlsx")
+    writer.close()
+    print(NombreDocumento+".xlsx")
 
 def validar_contenido_id():  
     if(df1.empty):
