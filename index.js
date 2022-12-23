@@ -42,6 +42,8 @@ app.get('/txtSS', (req,res) => {
     res.render("TXTSS")
 })
 
+var Nombre = "";
+
 // Peticion quinta
 app.post('/procesar', callName);
 
@@ -49,7 +51,6 @@ function callName(req, res) {
     var data = req.body.id;
     if(data != ""){
         var process = spawn('python',["./views/ReporteHorizontal.py",data]);
-        var Nombre = "";
         // process.stdout.on('data', function(data) {
         process.stderr.on("data",(data)=>{
             console.error('stderr:',data.toString());
@@ -73,6 +74,7 @@ function callName(req, res) {
                 }
                 leerexcel();
                 res.download('./public/'+Nombre);
+                // res.render('Download');
                 setTimeout(()=>{
                     fs.access('./public/'+Nombre, error => {
                         if (!error) {
